@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pequeños Sabios - Guía para Padres</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Quicksand para un aspecto redondeado y amigable -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome (opcional para íconos, usando SVG inline preferentemente, pero incluyéndolo por si acaso) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B35', // Naranja principal
+                        primary_light: '#ff8c61',
+                        background: '#FFF5E1', // Crema
+                        card_bg: '#FFFFFF',
+                        text_main: '#4A4A4A',
+                        text_muted: '#7A7A7A',
+                        category_bg: '#FFDAB9'
+                    },
+                    fontFamily: {
+                        sans: ['Quicksand', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+                        'hover': '0 10px 15px -3px rgba(255, 107, 53, 0.2), 0 4px 6px -2px rgba(255, 107, 53, 0.1)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos generales y animaciones */
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.text_main');
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ocultar barra de desplazamiento manteniendo funcionalidad (opcional, para estética limpia) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.primary_light');
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.primary');
+        }
+
+        /* Transiciones para las tarjetas expansibles */
+        .story-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease-in-out, padding 0.3s ease;
+            opacity: 0;
+        }
+        
+        .story-card.expanded .story-details {
+            max-height: 1000px; /* Suficiente para el contenido */
+            opacity: 1;
+            padding-top: 1.5rem; /* Equivalent to mt-6 */
+        }
+
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .story-card.expanded .chevron-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Estilos específicos para impresión */
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .story-card {
+                break-inside: avoid;
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                margin-bottom: 20px !important;
+            }
+            .story-details {
+                max-height: none !important;
+                opacity: 1 !important;
+                display: block !important; /* Asegurar que se vea todo al imprimir */
+            }
+            .print-header {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 2rem;
+                color: #FF6B35;
+            }
+            header, .search-container {
+                display: none; /* Ocultar UI web en impresión */
+            }
+            .text-primary {
+                color: #FF6B35 !important;
+            }
+            .bg-background { background-color: white !important; }
+            .bg-card_bg { background-color: white !important; }
+        }
+
+        /* Helper para impresión: mostrar encabezado solo en impresión */
+        .print-header { display: none; }
+    </style>
+</head>
+<body class="font-sans min-h-screen">
+
+    <!-- Encabezado solo para impresión -->
+    <div class="print-header pt-8">
+        <h1 class="text-4xl font-bold">Pequeños Sabios</h1>
+        <p class="text-xl mt-2 text-gray-600">Guía de Lectura y Reflexión para Padres</p>
+    </div>
+
+    <!-- Navegación/Header web -->
+    <header class="bg-white shadow-soft sticky top-0 z-50 no-print">
+        <div class="max-w-4xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-primary text-white p-2 rounded-full">
+                    <i class="fa-solid fa-book-open text-xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-primary">Pequeños Sabios</h1>
+            </div>
+            <button onclick="window.print()" class="text-text_muted hover:text-primary transition-colors flex items-center gap-2" title="Imprimir Guía">
+                <i class="fa-solid fa-print"></i>
+                <span class="hidden sm:inline text-sm font-medium">Imprimir</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        
+        <div class="mb-10 text-center no-print">
+            <h2 class="text-3xl font-bold text-text_main mb-4">Guía para Padres</h2>
+            <p class="text-text_muted mb-8 max-w-2xl mx-auto">
+                Encuentra cuentos para leer con tus hijos y guías de conversación para cultivar valores fundamentales.
+            </p>
+
+            <div class="search-container bg-white p-2 rounded-full shadow-soft flex items-center max-w-md mx-auto border border-orange-100 focus-within:ring-2 focus-within:ring-primary focus-within:border-primary transition-all">
+                <i class="fa-solid fa-search text-text_muted ml-4"></i>
+                <input type="text" id="searchInput" placeholder="Buscar por título o valor..." 
+                       class="w-full bg-transparent border-none focus:outline-none focus:ring-0 px-4 py-2 text-text_main placeholder-gray-400">
+                <select id="valueFilter" class="bg-background text-text_main border-none rounded-full py-2 pl-3 pr-8 focus:outline-none focus:ring-0 cursor-pointer appearance-none mr-1 font-medium text-sm">
+                    <option value="todos">Todos los Valores</option>
+                    <option value="Empatía">Empatía</option>
+                    <option value="Responsabilidad">Responsabilidad</option>
+                    <option value="Paciencia">Paciencia</option>
+                    <option value="Gratitud">Gratitud</option>
+                    <option value="Manejo de emociones">Manejo de emociones</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Contenedor de las tarjetas de cuentos -->
+        <div id="storiesContainer" class="space-y-6">
+            <!-- Las tarjetas se generarán dinámicamente aquí -->
+        </div>
+
+        <!-- Mensaje de estado (No hay resultados) -->
+        <div id="noResults" class="hidden text-center py-12 no-print">
+            <i class="fa-solid fa-face-frown-open text-4xl text-text_muted mb-3"></i>
+            <p class="text-xl text-text_muted">No se encontraron cuentos con esos criterios.</p>
+            <button onclick="resetFilters()" class="mt-4 text-primary font-medium hover:underline">Limpiar búsqueda</button>
+        </div>
+
+    </main>
+
+    <script>
+        // Datos de los 20 cuentos organizados por categorías
+        const stories = [
+            // EMPATÍA (4 cuentos)
+            {
+                id: 1,
+                title: "El zapatito de cristal que apretaba",
+                value: "Empatía",
+                categoryColor: "bg-pink-100 text-pink-700",
+                icon: "fa-heart",
+                questions: [
+                    "¿Cómo crees que se sentía el personaje cuando nadie entendía que el zapato le dolía?",
+                    "Si vieras a un amigo llorando porque algo le duele, ¿qué le dirías?",
+                    "¿Alguna vez te has sentido como el personaje del cuento? ¿Qué te ayudó a sentirte mejor?"
+                ],
+                tip: "Valida las emociones de tu hijo. Antes de intentar 'solucionar' su problema, dile: 'Entiendo que esto te haga sentir triste/enojado'.",
+                activity: "Juego de caras: Dibuja diferentes expresiones faciales en tarjetas. Cada uno saca una tarjeta e intenta actuar esa emoción, mientras el otro adivina cómo se siente."
+            },
+            {
+                id: 2,
+                title: "El osito que no quería compartir su miel",
+                value: "Empatía",
+                categoryColor: "bg-pink-100 text-pink-700",
+                icon: "fa-heart",
+                questions: [
+                    "¿Por qué crees que el osito no quería compartir al principio?",
+                    "¿Cómo cambió la cara de sus amigos cuando por fin les dio un poco de miel?",
+                    "¿Qué se siente mejor: comer toda la miel solo o ver a tus amigos felices compartiendo?"
+                ],
+                tip: "No obligues a compartir. Fomenta el 'intercambio por turnos'. Dile: 'Cuando termines de jugar con ese coche, ¿se lo prestas a tu hermano?'.",
+                activity: "Cocinemos juntos: Preparen galletas o un sándwich con la condición de que es 'para regalar' a otro miembro de la familia o a un vecino."
+            },
+            {
+                id: 3,
+                title: "Las gafas mágicas de la ardilla",
+                value: "Empatía",
+                categoryColor: "bg-pink-100 text-pink-700",
+                icon: "fa-heart",
+                questions: [
+                    "¿Qué veían de diferente las gafas mágicas de la ardilla?",
+                    "Si tuvieras esas gafas, ¿qué crees que verías en tu mejor amigo hoy?",
+                    "¿Por qué es importante intentar ver las cosas como las ven los demás?"
+                ],
+                tip: "Usa historias de la vida real. Cuando vean a alguien en la calle o en la TV, pregúntale: '¿Cómo crees que se siente esa persona ahora mismo?'.",
+                activity: "Las gafas de la amabilidad: Hagan unas 'gafas' con cartón. Quien se las ponga durante la cena, debe decir algo amable que haya notado en los demás ese día."
+            },
+            {
+                id: 4,
+                title: "El pájaro que cantaba desafinado",
+                value: "Empatía",
+                categoryColor: "bg-pink-100 text-pink-700",
+                icon: "fa-heart",
+                questions: [
+                    "¿Cómo se sentía el pájaro cuando los demás se tapaban los oídos?",
+                    "¿Qué hizo el búho sabio para ayudar al pajarito?",
+                    "¿Qué podemos hacer cuando alguien intenta hacer algo nuevo pero no le sale perfecto al principio?"
+                ],
+                tip: "Modela la empatía al corregir. En lugar de decir '¡Lo hiciste mal!', di 'Veo que te estás esforzando mucho, ¿quieres que te muestre un truco que me ayuda a mí?'.",
+                activity: "Aplauso por el esfuerzo: Esta semana, celebren los intentos fallidos tanto como los éxitos. Aplaudan cuando alguien intente algo difícil, aunque no lo logre a la primera."
+            },
+
+            // RESPONSABILIDAD (4 cuentos)
+            {
+                id: 5,
+                title: "La tortuga que olvidó su caparazón",
+                value: "Responsabilidad",
+                categoryColor: "bg-blue-100 text-blue-700",
+                icon: "fa-star",
+                questions: [
+                    "¿Qué pasó cuando la tortuga olvidó prepararse para la lluvia?",
+                    "¿Qué cosas tienes que recordar hacer tú solito todos los días?",
+                    "¿Cómo te sientes cuando haces tus tareas sin que mamá o papá te lo recuerden?"
+                ],
+                tip: "Fomenta la autonomía creando rutinas visuales (dibujos de lavarse los dientes, vestirse) para que tu hijo pueda seguirlas por sí mismo.",
+                activity: "La tabla del capitán: Creen juntos una tabla con 3 tareas pequeñas diarias. Ponle una pegatina o dibuja una estrella cada vez que las cumpla sin recordatorios."
+            },
+            {
+                id: 6,
+                title: "El dragón que no apagaba su fuego",
+                value: "Responsabilidad",
+                categoryColor: "bg-blue-100 text-blue-700",
+                icon: "fa-star",
+                questions: [
+                    "¿Qué problemas causaba el dragón al no controlar su fuego?",
+                    "¿Por qué es importante limpiar lo que desordenamos, como hizo el dragón al final?",
+                    "Si derramas agua en el suelo por accidente, ¿de quién es la responsabilidad de limpiarlo?"
+                ],
+                tip: "Permite que experimenten consecuencias naturales (seguras). Si olvidan su juguete favorito en el parque, el juguete se pierde. No lo reemplaces inmediatamente.",
+                activity: "El detective del desorden: Antes de cenar, pongan una canción rápida. El juego consiste en recoger la mayor cantidad de juguetes antes de que acabe la música."
+            },
+            {
+                id: 7,
+                title: "Las semillas mágicas de la granjera",
+                value: "Responsabilidad",
+                categoryColor: "bg-blue-100 text-blue-700",
+                icon: "fa-star",
+                questions: [
+                    "¿Qué tuvo que hacer la granjera todos los días para que la semilla creciera?",
+                    "¿Qué hubiera pasado si ella decía 'hoy estoy cansada, no la regaré'?",
+                    "¿Qué cosa cuidamos en nuestra casa que necesita atención todos los días?"
+                ],
+                tip: "Asigna tareas apropiadas para su edad. Un niño de 3 años puede guardar sus zapatos; uno de 5 puede poner las servilletas en la mesa.",
+                activity: "Nuestra propia planta: Planteen una semilla de frijol en un vaso con algodón húmedo. La responsabilidad del niño será revisar si necesita agua cada mañana."
+            },
+            {
+                id: 8,
+                title: "El relojero que se quedó dormido",
+                value: "Responsabilidad",
+                categoryColor: "bg-blue-100 text-blue-700",
+                icon: "fa-star",
+                questions: [
+                    "¿Cómo afectó a todo el pueblo que el relojero no hiciera su trabajo?",
+                    "Cuando tú no haces tu parte en casa, ¿cómo afecta a los demás?",
+                    "¿Qué podemos hacer para asegurarnos de no olvidar nuestras promesas?"
+                ],
+                tip: "Elogia el proceso y la responsabilidad, no solo el resultado. 'Me di cuenta de que te acordaste de alimentar al perro tú solo. Eres muy responsable'.",
+                activity: "El cofre de las promesas: Escriban en un papel una pequeña promesa para la semana (ej. 'Haré mi cama'). Guárdenla en una caja y revísenla el domingo para ver si cumplieron."
+            },
+
+            // PACIENCIA (4 cuentos)
+            {
+                id: 9,
+                title: "La oruga que quería volar hoy",
+                value: "Paciencia",
+                categoryColor: "bg-green-100 text-green-700",
+                icon: "fa-hourglass-half",
+                questions: [
+                    "¿Por qué la oruga estaba tan frustrada al principio del cuento?",
+                    "¿Valió la pena el tiempo que esperó dentro de su capullo? ¿Por qué?",
+                    "¿Hay algo que quieras hacer ahora mismo pero sabes que tienes que esperar?"
+                ],
+                tip: "Usa temporizadores visuales (relojes de arena o apps) para hacer que el tiempo de espera sea concreto y visible para el niño.",
+                activity: "El juego de la estatua: Pongan música y bailen. Cuando la música pare, deben quedarse completamente quietos (practicando el control de impulsos) hasta que vuelva a sonar."
+            },
+            {
+                id: 10,
+                title: "El panadero y la masa que no subía",
+                value: "Paciencia",
+                categoryColor: "bg-green-100 text-green-700",
+                icon: "fa-hourglass-half",
+                questions: [
+                    "¿Qué hizo mal el panadero la primera vez al meter el pan muy rápido al horno?",
+                    "¿Qué cosas buenas toman tiempo en hacerse?",
+                    "¿Cómo podemos distraernos cuando tenemos que esperar por algo divertido?"
+                ],
+                tip: "Enseña estrategias de afrontamiento para la espera. Enséñale a cantar una canción en su cabeza o a contar cosas de un color específico en la habitación.",
+                activity: "Hacer pan o gelatina: Preparen juntos algo que requiera un proceso de espera visible (la masa subiendo, la gelatina cuajando en la refri). Hablen de la paciencia mientras esperan."
+            },
+            {
+                id: 11,
+                title: "El semáforo que siempre estaba en rojo",
+                value: "Paciencia",
+                categoryColor: "bg-green-100 text-green-700",
+                icon: "fa-hourglass-half",
+                questions: [
+                    "¿Por qué es importante el color rojo del semáforo, aunque nos haga esperar?",
+                    "¿Qué pasaría si todos los coches avanzaran al mismo tiempo sin paciencia?",
+                    "Cuando mamá o papá están ocupados, ¿cómo puedes esperar tu turno para hablar?"
+                ],
+                tip: "Evita recompensar la impaciencia. Si llora por un dulce en la fila del supermercado y se lo das, aprenderá que quejarse acelera el proceso. Mantén la calma y el límite.",
+                activity: "Semáforo en casa: Creen tarjetas rojas, amarillas y verdes. Jueguen a 'luz roja, luz verde' en el pasillo, practicando detenerse de inmediato cuando se muestra el rojo."
+            },
+            {
+                id: 12,
+                title: "El castor que construía muy rápido",
+                value: "Paciencia",
+                categoryColor: "bg-green-100 text-green-700",
+                icon: "fa-hourglass-half",
+                questions: [
+                    "¿Qué le pasó a la presa del castor por hacerla apurado?",
+                    "¿Por qué la presa de su abuelo era más fuerte?",
+                    "¿Te ha pasado alguna vez que por hacer un dibujo muy rápido no te salió como querías?"
+                ],
+                tip: "Modela tu propia paciencia en voz alta. Di: 'Uf, esta fila es muy larga. Voy a respirar profundo y tener paciencia mientras esperamos'." ,
+                activity: "Construcción cuidadosa: Usen bloques o legos. El reto es hacer la torre más alta, pero solo pueden colocar una pieza cada vez que cuenten hasta 5 lentamente."
+            },
+
+            // GRATITUD (4 cuentos)
+            {
+                id: 13,
+                title: "El niño que tenía demasiados juguetes",
+                value: "Gratitud",
+                categoryColor: "bg-yellow-100 text-yellow-700",
+                icon: "fa-gift",
+                questions: [
+                    "¿Por qué el niño no era feliz a pesar de tener tantos juguetes?",
+                    "¿Qué descubrió cuando jugó con la caja de cartón vacía?",
+                    "Nombra tres cosas pequeñas que te hayan hecho feliz el día de hoy."
+                ],
+                tip: "Cambia el enfoque de 'lo que falta' a 'lo que hay'. Cuando pida más juguetes, recuérdale con entusiasmo los que ya tiene y sugieran nuevas formas de jugar con ellos.",
+                activity: "El frasco de la gratitud: Decoren un frasco de vidrio. Cada noche, escriban o dibujen algo por lo que están agradecidos ese día y pónganlo dentro."
+            },
+            {
+                id: 14,
+                title: "El árbol de las hojas doradas",
+                value: "Gratitud",
+                categoryColor: "bg-yellow-100 text-yellow-700",
+                icon: "fa-gift",
+                questions: [
+                    "¿Cómo agradecían los animales al árbol por darles sombra?",
+                    "¿Qué pasó cuando olvidaron dar las gracias y cuidar el árbol?",
+                    "¿A quién te olvidaste de decirle 'gracias' hoy?"
+                ],
+                tip: "Enséñales a agradecer por las acciones, no solo por las cosas. 'Gracias por ayudarme a poner la mesa' o 'Gracias por jugar tan lindo con tu hermana'.",
+                activity: "Tarjetas de agradecimiento: Hagan dibujos sencillos en tarjetas. Entréguenlas a personas que les ayudan en el día a día: la maestra, el abuelo, o quien limpia la calle."
+            },
+            {
+                id: 15,
+                title: "La nube que quería ser sol",
+                value: "Gratitud",
+                categoryColor: "bg-yellow-100 text-yellow-700",
+                icon: "fa-gift",
+                questions: [
+                    "¿Por qué la nube estaba triste siendo nube?",
+                    "¿Qué le hizo darse cuenta de lo importante que era su lluvia?",
+                    "¿Qué cosas tienes tú que te hacen especial y por las que estás agradecido?"
+                ],
+                tip: "Practica el 'Mantra de la gratitud' en familia antes de cenar. Que cada persona diga una cosa buena que le pasó en el día, por pequeña que sea.",
+                activity: "El cazador de cosas buenas: Dale a tu hijo una cámara (o tu teléfono) y pídele que tome 3 fotos de cosas en la casa que le gustan mucho y por las que está feliz de tener."
+            },
+            {
+                id: 16,
+                title: "El zorro que aprendió a decir 'gracias'",
+                value: "Gratitud",
+                categoryColor: "bg-yellow-100 text-yellow-700",
+                icon: "fa-gift",
+                questions: [
+                    "¿Cómo se sentían los demás animales cuando el zorro tomaba cosas sin agradecer?",
+                    "¿Cómo cambió todo cuando pronunció la palabra mágica?",
+                    "¿Por qué crees que decir 'gracias' hace que la otra persona sonría?"
+                ],
+                tip: "No obligues a un 'gracias' mecánico. Explica el porqué: 'Decimos gracias para que la abuela sepa que nos hizo muy felices su regalo'.",
+                activity: "El juego del espejo agradecido: Pónganse frente a frente. Uno dice algo físico que agradece del otro (ej. 'Gracias por tus brazos que me abrazan'), luego cambian de turno."
+            },
+
+            // MANEJO DE EMOCIONES (4 cuentos)
+            {
+                id: 17,
+                title: "El monstruo de los colores revueltos",
+                value: "Manejo de emociones",
+                categoryColor: "bg-purple-100 text-purple-700",
+                icon: "fa-face-smile-beam",
+                questions: [
+                    "¿Qué pasaba cuando el monstruo sentía todas las emociones al mismo tiempo?",
+                    "¿Cómo le ayudó separar las emociones en diferentes frascos?",
+                    "¿Qué color crees que tiene tu enojo? ¿Y tu alegría?"
+                ],
+                tip: "Ayuda a tu hijo a darle nombre a sus emociones. 'Veo que estás frustrado porque la torre se cayó'. Nombrarlo ayuda a calmar la amígdala del cerebro.",
+                activity: "Termómetro emocional: Dibuja un termómetro gigante. El rojo es 'muy enojado', amarillo 'un poco molesto', verde 'tranquilo'. Pídele que señale cómo se siente hoy."
+            },
+            {
+                id: 18,
+                title: "El volcán que vivía en la barriga de Leo",
+                value: "Manejo de emociones",
+                categoryColor: "bg-purple-100 text-purple-700",
+                icon: "fa-face-smile-beam",
+                questions: [
+                    "¿Qué sentía Leo en su barriga justo antes de gritar?",
+                    "¿Qué truco usó para que el volcán no hiciera erupción?",
+                    "¿Tú qué sientes en tu cuerpo cuando te empiezas a enojar?"
+                ],
+                tip: "Enséñale técnicas de calma cuando esté tranquilo, no en medio de una rabieta. Así, cuando el 'volcán' despierte, ya sabrá cómo usar la técnica.",
+                activity: "Respiración de la flor y la vela: Cierren los ojos. Imaginen que huelen una flor profundamente por la nariz, y luego soplan lentamente una vela por la boca. Repetir 5 veces."
+            },
+            {
+                id: 19,
+                title: "La tortuga que se escondía en su caparazón",
+                value: "Manejo de emociones",
+                categoryColor: "bg-purple-100 text-purple-700",
+                icon: "fa-face-smile-beam",
+                questions: [
+                    "¿Por qué la tortuga se escondía cada vez que sentía miedo?",
+                    "¿Qué le dijo el sabio búho que hiciera mientras estaba dentro del caparazón?",
+                    "¿A dónde te gusta ir a ti cuando te sientes abrumado o triste?"
+                ],
+                tip: "Crea un 'rincón de la calma' en casa (no un rincón de castigo). Un espacio acogedor con cojines, libros y colores donde pueda ir cuando necesite regularse.",
+                activity: "El abrazo de la tortuga: Enséñale a cruzar los brazos sobre el pecho, bajar la cabeza y darse un 'auto-abrazo' apretado durante 10 segundos para calmar su sistema nervioso."
+            },
+            {
+                id: 20,
+                title: "El globo que se inflaba de tristeza",
+                value: "Manejo de emociones",
+                categoryColor: "bg-purple-100 text-purple-700",
+                icon: "fa-face-smile-beam",
+                questions: [
+                    "¿Qué pasaba con el globo cada vez que el niño no lloraba cuando estaba triste?",
+                    "¿Por qué se sintió más ligero después de dejar salir un poco de aire (llorar)?",
+                    "¿Es malo llorar cuando nos sentimos tristes?"
+                ],
+                tip: "Desestigmatiza el llanto. Frases como 'los niños grandes no lloran' bloquean la emoción. Cámbialo por: 'Está bien llorar, estoy aquí contigo'.",
+                activity: "Dibujar la música: Pongan una canción triste y dibujen cómo suena. Luego cambien a una canción alegre y usen otros colores. Hablen de cómo las emociones cambian."
+            }
+        ];
+
+        const container = document.getElementById('storiesContainer');
+        const searchInput = document.getElementById('searchInput');
+        const valueFilter = document.getElementById('valueFilter');
+        const noResultsMsg = document.getElementById('noResults');
+
+        // Función para renderizar las tarjetas
+        function renderStories(storiesToRender) {
+            container.innerHTML = '';
+            
+            if (storiesToRender.length === 0) {
+                noResultsMsg.classList.remove('hidden');
+            } else {
+                noResultsMsg.classList.add('hidden');
+                
+                storiesToRender.forEach(story => {
+                    const card = document.createElement('div');
+                    card.className = `story-card bg-card_bg rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer hover:shadow-hover transition-all duration-300`;
+                    
+                    // Aseguramos que la tarjeta en sí tenga el onclick para expandir
+                    card.onclick = () => toggleCard(card.id);
+                    card.id = `story-${story.id}`;
+
+                    card.innerHTML = `
+                        <!-- Encabezado de la tarjeta (siempre visible) -->
+                        <div class="p-6 flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full ${story.categoryColor} flex items-center justify-center flex-shrink-0 print:border print:border-gray-300">
+                                    <i class="fa-solid ${story.icon} text-xl"></i>
+                                </div>
+                                <div>
+                                    <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold ${story.categoryColor} mb-2 print:border print:border-gray-300">
+                                        ${story.value}
+                                    </span>
+                                    <h3 class="text-xl font-bold text-text_main leading-tight">${story.title}</h3>
+                                </div>
+                            </div>
+                            <div class="chevron-icon text-text_muted p-2 no-print">
+                                <i class="fa-solid fa-chevron-down text-xl"></i>
+                            </div>
+                        </div>
+
+                        <!-- Detalles expandibles -->
+                        <div class="story-details bg-gray-50/50 px-6 pb-6 border-t border-gray-50 print:bg-white print:border-none">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <!-- Columna Izquierda: Preguntas -->
+                                <div>
+                                    <div class="flex items-center gap-2 text-primary font-bold mb-3">
+                                        <i class="fa-regular fa-comments"></i>
+                                        <h4>Preguntas para conversar</h4>
+                                    </div>
+                                    <ul class="space-y-3">
+                                        ${story.questions.map(q => `
+                                            <li class="flex items-start gap-2">
+                                                <i class="fa-solid fa-circle-question text-primary_light mt-1 text-sm"></i>
+                                                <span class="text-text_main text-sm md:text-base leading-relaxed">${q}</span>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+
+                                <!-- Columna Derecha: Consejo y Actividad -->
+                                <div class="space-y-6">
+                                    <div class="bg-white p-4 rounded-xl shadow-sm border border-orange-50 print:border-gray-200 print:shadow-none">
+                                        <div class="flex items-center gap-2 text-primary font-bold mb-2">
+                                            <i class="fa-regular fa-lightbulb"></i>
+                                            <h4>Consejo para padres</h4>
+                                        </div>
+                                        <p class="text-text_main text-sm md:text-base italic">${story.tip}</p>
+                                    </div>
+                                    
+                                    <div class="bg-primary/10 p-4 rounded-xl border border-primary/20 print:bg-white print:border-gray-200">
+                                        <div class="flex items-center gap-2 text-primary font-bold mb-2">
+                                            <i class="fa-solid fa-hands-holding-child"></i>
+                                            <h4>Actividad de refuerzo</h4>
+                                        </div>
+                                        <p class="text-text_main text-sm md:text-base">${story.activity}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+        }
+
+        // Función para expandir/colapsar tarjeta
+        function toggleCard(cardId) {
+            // Evitar comportamiento interactivo durante impresión
+            if (window.matchMedia('print').matches) return;
+
+            const card = document.getElementById(cardId);
+            
+            // Si queremos acordeón (solo una abierta a la vez):
+            // document.querySelectorAll('.story-card.expanded').forEach(c => {
+            //     if(c.id !== cardId) c.classList.remove('expanded');
+            // });
+
+            card.classList.toggle('expanded');
+        }
+
+        // Función de filtrado combinada
+        function filterStories() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedValue = valueFilter.value;
+
+            const filtered = stories.filter(story => {
+                const matchesSearch = story.title.toLowerCase().includes(searchTerm) || 
+                                      story.value.toLowerCase().includes(searchTerm);
+                const matchesValue = selectedValue === 'todos' || story.value === selectedValue;
+                
+                return matchesSearch && matchesValue;
+            });
+
+            renderStories(filtered);
+        }
+
+        // Función para limpiar filtros
+        function resetFilters() {
+            searchInput.value = '';
+            valueFilter.value = 'todos';
+            filterStories();
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', filterStories);
+        valueFilter.addEventListener('change', filterStories);
+
+        // Renderizar todo al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            renderStories(stories);
+            
+            // Expandir la primera tarjeta como ejemplo (opcional, comentado para una vista más limpia inicial)
+            // if(stories.length > 0) {
+            //    setTimeout(() => toggleCard(`story-${stories[0].id}`), 500);
+            // }
+        });
+
+    </script>
+</body>
+</html>
