@@ -101,31 +101,22 @@
         }
     </style>
 </head>
-<body class="antialiased min-h-screen pb-20">
+<body class="antialiased min-h-screen pb-20 text-lg">
 
     <header class="sticky top-0 z-50 bg-[#FDFBF7]/95 backdrop-blur-md pt-6 pb-4 px-4 sm:px-6 shadow-sm no-print">
         <div class="max-w-3xl mx-auto">
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h1 class="font-display text-2xl sm:text-3xl text-brand-orange font-bold leading-tight">Pequeños Sabios</h1>
-                    <p class="text-brand-muted text-sm font-medium">Guía para Padres</p>
+                    <h1 class="font-display text-3xl sm:text-4xl text-brand-orange font-bold leading-tight">Pequeños Sabios</h1>
+                    <p class="text-brand-muted text-base font-medium">Guía para Padres</p>
                 </div>
-                <button onclick="window.print()" class="p-3 bg-white rounded-2xl shadow-premium text-brand-orange hover:bg-orange-50 transition-colors" aria-label="Imprimir guía">
-                    <i class="ph ph-printer text-2xl"></i>
+                <button onclick="window.print()" class="p-4 bg-white rounded-2xl shadow-premium text-brand-orange hover:bg-orange-50 transition-colors" aria-label="Imprimir guía">
+                    <i class="ph ph-printer text-3xl"></i>
                 </button>
             </div>
 
-            <!-- Search Bar -->
-            <div class="relative mb-4">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <i class="ph ph-magnifying-glass text-brand-muted text-xl"></i>
-                </div>
-                <input type="text" id="searchInput" placeholder="Buscar cuento o valor..." 
-                    class="w-full pl-11 pr-4 py-3.5 bg-white border border-gray-100 rounded-2xl shadow-premium text-brand-text placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-orange/50 transition-all font-sans">
-            </div>
-
             <!-- Category Chips -->
-            <div class="flex overflow-x-auto hide-scrollbar gap-2 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0" id="filterContainer">
+            <div class="flex overflow-x-auto hide-scrollbar gap-3 pb-2 -mx-4 px-4 sm:mx-0 sm:px-0" id="filterContainer">
                 <!-- Chips will be generated here -->
             </div>
         </div>
@@ -390,7 +381,6 @@
         ];
 
         let activeCategory = 'all';
-        let searchQuery = '';
         
         // Colors for badges to give variety
         const badgeColors = [
@@ -409,7 +399,7 @@
             const container = document.getElementById('filterContainer');
             let html = `
                 <button onclick="setCategory('all')" 
-                    class="px-5 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap 
+                    class="px-6 py-3 rounded-full text-base font-semibold transition-all whitespace-nowrap 
                     ${activeCategory === 'all' ? 'bg-brand-orange text-white shadow-md' : 'bg-white text-brand-muted hover:bg-orange-50'}">
                     Todas
                 </button>
@@ -419,7 +409,7 @@
                 const isActive = activeCategory === cat.id;
                 html += `
                     <button onclick="setCategory('${cat.id}')" 
-                        class="px-5 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap 
+                        class="px-6 py-3 rounded-full text-base font-semibold transition-all whitespace-nowrap 
                         ${isActive ? 'bg-brand-orange text-white shadow-md' : 'bg-white text-brand-muted hover:bg-orange-50'}">
                         ${cat.name}
                     </button>
@@ -434,11 +424,6 @@
             renderFilters();
             renderContent();
         }
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            searchQuery = e.target.value.toLowerCase();
-            renderContent();
-        });
 
         function toggleCard(button) {
             const card = button.closest('.print-card');
@@ -458,11 +443,7 @@
                 // Filter by category chip
                 if (activeCategory !== 'all' && activeCategory !== category.id) return;
 
-                // Filter stories by search query
-                const filteredStories = category.stories.filter(story => {
-                    return story.title.toLowerCase().includes(searchQuery) || 
-                           story.value.toLowerCase().includes(searchQuery);
-                });
+                const filteredStories = category.stories;
 
                 if (filteredStories.length === 0) return;
 
@@ -470,16 +451,16 @@
 
                 // Category Header
                 const section = document.createElement('section');
-                section.className = 'mb-10';
+                section.className = 'mb-12';
                 
                 const catHeader = document.createElement('h2');
-                catHeader.className = 'font-display text-xl font-bold text-brand-text mb-4 pl-2 border-l-4 border-brand-orange';
+                catHeader.className = 'font-display text-2xl font-bold text-brand-text mb-6 pl-3 border-l-4 border-brand-orange';
                 catHeader.textContent = category.name;
                 section.appendChild(catHeader);
 
                 // Cards Container
                 const cardsContainer = document.createElement('div');
-                cardsContainer.className = 'space-y-4';
+                cardsContainer.className = 'space-y-6';
 
                 filteredStories.forEach((story, storyIndex) => {
                     const badgeClass = getBadgeColor(storyIndex);
@@ -488,60 +469,60 @@
                     card.className = 'print-card bg-white rounded-3xl shadow-premium overflow-hidden transition-all hover:shadow-md';
                     
                     card.innerHTML = `
-                        <button onclick="toggleCard(this)" class="w-full text-left p-5 sm:p-6 flex items-center justify-between focus:outline-none focus:bg-orange-50/50 transition-colors">
+                        <button onclick="toggleCard(this)" class="w-full text-left p-6 sm:p-8 flex items-center justify-between focus:outline-none focus:bg-orange-50/50 transition-colors">
                             <div class="pr-4">
-                                <h3 class="font-display text-lg font-bold text-brand-text mb-2 leading-tight">${story.title}</h3>
-                                <span class="print-badge inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${badgeClass}">
+                                <h3 class="font-display text-xl sm:text-2xl font-bold text-brand-text mb-3 leading-tight">${story.title}</h3>
+                                <span class="print-badge inline-flex items-center px-4 py-1.5 rounded-full text-sm font-semibold ${badgeClass}">
                                     ${story.value}
                                 </span>
                             </div>
-                            <div class="w-10 h-10 rounded-full bg-brand-cream flex items-center justify-center flex-shrink-0 text-brand-orange caret-icon">
-                                <i class="ph-bold ph-caret-down text-lg"></i>
+                            <div class="w-12 h-12 rounded-full bg-brand-cream flex items-center justify-center flex-shrink-0 text-brand-orange caret-icon">
+                                <i class="ph-bold ph-caret-down text-xl"></i>
                             </div>
                         </button>
                         
                         <div class="accordion-content">
                             <div class="accordion-inner">
-                                <div class="px-5 pb-6 sm:px-6 sm:pb-8 pt-2 space-y-6 border-t border-gray-50 mx-5 sm:mx-6">
+                                <div class="px-6 pb-8 sm:px-8 sm:pb-10 pt-2 space-y-8 border-t border-gray-50 mx-6 sm:mx-8">
                                     
                                     <!-- Questions -->
-                                    <div class="flex gap-4">
+                                    <div class="flex gap-4 sm:gap-6">
                                         <div class="flex-shrink-0 mt-1">
-                                            <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
-                                                <i class="ph-fill ph-chat-circle-text text-brand-purpleText text-lg"></i>
+                                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                                                <i class="ph-fill ph-chat-circle-text text-brand-purpleText text-xl"></i>
                                             </div>
                                         </div>
                                         <div>
-                                            <h4 class="font-display font-bold text-brand-text mb-2">Para conversar:</h4>
-                                            <ul class="space-y-2 text-brand-muted text-sm sm:text-base leading-relaxed">
-                                                ${story.questions.map(q => `<li class="flex items-start"><span class="mr-2 text-purple-400">•</span> <span>${q}</span></li>`).join('')}
+                                            <h4 class="font-display text-xl font-bold text-brand-text mb-3">Para conversar:</h4>
+                                            <ul class="space-y-3 text-brand-muted text-lg sm:text-xl leading-relaxed">
+                                                ${story.questions.map(q => `<li class="flex items-start"><span class="mr-3 text-purple-400">•</span> <span>${q}</span></li>`).join('')}
                                             </ul>
                                         </div>
                                     </div>
 
                                     <!-- Advice -->
-                                    <div class="flex gap-4 bg-[#FCF9F2] p-4 rounded-2xl">
+                                    <div class="flex gap-4 sm:gap-6 bg-[#FCF9F2] p-6 rounded-2xl">
                                         <div class="flex-shrink-0 mt-1">
-                                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                                                <i class="ph-fill ph-lightbulb text-brand-orange text-lg"></i>
+                                            <div class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                                                <i class="ph-fill ph-lightbulb text-brand-orange text-xl"></i>
                                             </div>
                                         </div>
                                         <div>
-                                            <h4 class="font-display font-bold text-brand-text mb-1">Consejo para ti:</h4>
-                                            <p class="text-brand-muted text-sm sm:text-base leading-relaxed">${story.advice}</p>
+                                            <h4 class="font-display text-xl font-bold text-brand-text mb-2">Consejo para ti:</h4>
+                                            <p class="text-brand-muted text-lg sm:text-xl leading-relaxed">${story.advice}</p>
                                         </div>
                                     </div>
 
                                     <!-- Activity -->
-                                    <div class="flex gap-4">
+                                    <div class="flex gap-4 sm:gap-6">
                                         <div class="flex-shrink-0 mt-1">
-                                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                                                <i class="ph-fill ph-star text-brand-greenText text-lg"></i>
+                                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                                <i class="ph-fill ph-star text-brand-greenText text-xl"></i>
                                             </div>
                                         </div>
                                         <div>
-                                            <h4 class="font-display font-bold text-brand-text mb-1">Actividad de la semana:</h4>
-                                            <p class="text-brand-muted text-sm sm:text-base leading-relaxed">${story.activity}</p>
+                                            <h4 class="font-display text-xl font-bold text-brand-text mb-2">Actividad de la semana:</h4>
+                                            <p class="text-brand-muted text-lg sm:text-xl leading-relaxed">${story.activity}</p>
                                         </div>
                                     </div>
 
@@ -558,12 +539,12 @@
 
             if (!hasAnyResults) {
                 container.innerHTML = `
-                    <div class="text-center py-12">
-                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm text-brand-muted">
-                            <i class="ph ph-magnifying-glass text-2xl"></i>
+                    <div class="text-center py-16">
+                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm text-brand-muted">
+                            <i class="ph ph-magnifying-glass text-4xl"></i>
                         </div>
-                        <h3 class="font-display text-xl font-bold text-brand-text mb-2">No encontramos cuentos</h3>
-                        <p class="text-brand-muted">Intenta con otra palabra clave o cambia el filtro.</p>
+                        <h3 class="font-display text-2xl font-bold text-brand-text mb-3">No encontramos cuentos</h3>
+                        <p class="text-brand-muted text-lg">Intenta cambiando el filtro.</p>
                     </div>
                 `;
             }
