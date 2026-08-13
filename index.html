@@ -2,38 +2,43 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pequeños Sabios — Guía para Padres</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#FF6B35">
+    <title>Pequeños Sabios - Guía para Padres</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        display: ['Quicksand', 'sans-serif'],
-                        body: ['Nunito Sans', 'sans-serif'],
+                        'title': ['"Quicksand"', 'sans-serif'],
+                        'body': ['"Quicksand"', 'sans-serif'],
                     },
                     colors: {
-                        brand: '#FF6B35',
-                        background: '#FAF8F5',
-                        // Paleta de categorías
-                        cat: {
-                            screen: { bg: '#E0F2FE', text: '#0284C7', border: '#7DD3FC' }, // Azul cielo
-                            learn: { bg: '#DCFCE7', text: '#15803D', border: '#86EFAC' },  // Verde salvia/menta
-                            routine: { bg: '#FFE4E6', text: '#BE123C', border: '#FDA4AF' }, // Rosa coral
-                            emotion: { bg: '#F3E8FF', text: '#6B21A8', border: '#D8B4FE' }, // Morado suave
-                            values: { bg: '#FFEDD5', text: '#C2410C', border: '#FDBA74' },  // Naranja/Ámbar
-                        }
+                        'ps-orange': '#FF6B35',
+                        'ps-cream': '#FDFBF7',
+                        'ps-text': '#2D3748',
+                        'cat-screen': '#E0F2FE', // sky-100
+                        'cat-screen-dark': '#0284C7', // sky-600
+                        'cat-learn': '#DCFCE7', // green-100
+                        'cat-learn-dark': '#16A34A', // green-600
+                        'cat-routine': '#FFE4E6', // rose-100
+                        'cat-routine-dark': '#E11D48', // rose-600
+                        'cat-emotion': '#F3E8FF', // purple-100
+                        'cat-emotion-dark': '#9333EA', // purple-600
+                        'cat-values': '#FEF3C7', // amber-100
+                        'cat-values-dark': '#D97706', // amber-600
                     },
                     boxShadow: {
-                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.03)',
-                        'floating': '0 10px 30px -5px rgba(0, 0, 0, 0.05)',
+                        'premium': '0 10px 40px -10px rgba(0,0,0,0.08)',
+                        'premium-hover': '0 20px 40px -10px rgba(0,0,0,0.12)',
                     }
                 }
             }
@@ -41,522 +46,684 @@
     </script>
 
     <style>
+        /* Base styles */
         body {
-            background-color: #FAF8F5;
+            background-color: #FDFBF7;
+            color: #2D3748;
             -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
         }
 
-        /* Animación suave para el acordeón usando CSS Grid */
-        .accordion-content {
-            display: grid;
-            grid-template-rows: 0fr;
-            transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .accordion-content-inner {
-            overflow: hidden;
-        }
-        .card.expanded .accordion-content {
-            grid-template-rows: 1fr;
-        }
-        
-        .card-icon-rotate {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .card.expanded .card-icon-rotate {
-            transform: rotate(180deg);
-        }
-
-        /* Ocultar barra de scroll en los filtros */
+        /* Hide scrollbar for Chrome, Safari and Opera */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
+        /* Hide scrollbar for IE, Edge and Firefox */
         .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
 
-        /* Estilos específicos para impresión */
+        /* Smooth Screen Transitions */
+        .screen-transition {
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+        }
+        .screen-hidden-right {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .screen-hidden-left {
+            transform: translateX(-30%); /* Parallax effect */
+            opacity: 0;
+            pointer-events: none;
+        }
+        .screen-active {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Tab Transitions */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Accordion transition */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        .accordion-content.expanded {
+            max-height: 1000px; /* Arbitrary large number */
+            opacity: 1;
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        .expanded .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Haptic feedback simulator */
+        .tap-effect:active {
+            transform: scale(0.97);
+            transition: transform 0.1s;
+        }
+
+        /* Safe area padding for bottom nav on iOS */
+        .safe-pb {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        /* Print Styles */
         @media print {
-            body { background-color: white; color: black; }
-            header, .filters-container { display: none !important; }
-            main { padding: 0 !important; margin: 0 !important; }
-            
-            .category-section { margin-bottom: 2rem !important; page-break-inside: avoid; }
-            .category-header { background: none !important; padding: 0 !important; border-bottom: 2px solid #ccc; margin-bottom: 1rem; }
-            
-            .card { 
-                box-shadow: none !important; 
-                border: 1px solid #eee; 
-                margin-bottom: 1rem !important; 
-                page-break-inside: avoid;
-            }
-            .card-icon-rotate { display: none !important; }
-            
-            /* Expandir todo para imprimir */
-            .accordion-content { grid-template-rows: 1fr !important; }
-            .accordion-content-inner { padding-top: 1rem !important; }
-            
-            /* Ajustes de color para ahorro de tinta */
-            .badge { background: none !important; border: 1px solid #ccc; color: #333 !important; }
-            .text-cat-screen-text, .text-cat-learn-text, .text-cat-routine-text, .text-cat-emotion-text, .text-cat-values-text { color: black !important; }
-            .bg-cat-screen-bg, .bg-cat-learn-bg, .bg-cat-routine-bg, .bg-cat-emotion-bg, .bg-cat-values-bg { background-color: transparent !important; }
+            body { background: white; color: black; }
+            nav, .hero-section, .back-btn, #print-btn, .accordion-icon { display: none !important; }
+            .accordion-content { max-height: none !important; opacity: 1 !important; padding-top: 1rem !important; padding-bottom: 1rem !important; }
+            .screen-transition { transform: none !important; opacity: 1 !important; position: static !important; }
+            #screen-category { display: block !important; }
+            #screen-home { display: none !important; }
+            .print-break { page-break-inside: avoid; margin-bottom: 2rem; border: 1px solid #ddd; padding: 1rem; border-radius: 8px;}
+            .story-card-header { background: #f3f4f6 !important; color: black !important; }
+            * { box-shadow: none !important; }
         }
     </style>
 </head>
-<body class="font-body text-gray-800 antialiased min-h-screen flex flex-col">
+<body class="font-body h-screen w-full flex flex-col overflow-hidden">
 
-    <header class="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-brand text-white flex items-center justify-center shadow-md">
-                    <i class="ph ph-books text-2xl"></i>
+    <!-- Contenedor Principal (área de contenido) -->
+    <main class="flex-1 relative overflow-hidden bg-ps-cream">
+        
+        <!-- TAB 1: CUENTOS (Navegación en 2 pantallas) -->
+        <div id="tab-cuentos" class="tab-content active h-full w-full relative">
+            
+            <!-- PANTALLA 1: INICIO (Categorías) -->
+            <div id="screen-home" class="screen-transition screen-active absolute inset-0 w-full h-full overflow-y-auto no-scrollbar pb-24">
+                
+                <!-- Encabezado Principal (En caja diferenciada) -->
+                <div class="mt-4 mx-4 mb-3 py-3 px-4 bg-gradient-to-br from-orange-100 to-orange-50 border border-orange-200/50 rounded-2xl shadow-sm text-center">
+                    <h1 class="font-title text-xl font-bold text-ps-orange tracking-wide leading-none">PEQUEÑOS SABIOS</h1>
+                    <p class="font-body text-gray-600 font-medium mt-1 text-xs uppercase tracking-wider">Guía para padres</p>
                 </div>
-                <div>
-                    <h1 class="font-display font-bold text-xl leading-tight text-gray-900">Pequeños Sabios</h1>
-                    <p class="text-sm text-gray-500 font-medium">Guía para Padres</p>
+
+                <!-- Categorías Grid -->
+                <div class="px-4">
+                    <h2 class="font-title text-lg font-bold text-ps-text mb-2.5 pl-1">Temas para conversar</h2>
+                    <div id="categories-container" class="flex flex-col space-y-2.5">
+                        <!-- Las categorías se inyectan por JS -->
+                    </div>
                 </div>
             </div>
-            <button onclick="window.print()" class="p-2.5 rounded-full bg-white text-gray-600 shadow-sm border border-gray-100 hover:bg-gray-50 hover:text-brand transition-colors focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2" aria-label="Imprimir guía">
-                <i class="ph ph-printer text-xl"></i>
-            </button>
-        </div>
 
-        <!-- Filtros -->
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 pb-4">
-            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 filters-container" id="filters-container">
-                <!-- Los chips de filtro se generarán por JS -->
+            <!-- PANTALLA 2: CUENTOS DE UNA CATEGORÍA -->
+            <div id="screen-category" class="screen-transition screen-hidden-right absolute inset-0 w-full h-full overflow-y-auto no-scrollbar pb-28 bg-ps-cream z-10">
+                
+                <!-- Encabezado de Categoría -->
+                <div id="cat-header" class="py-3 px-4 flex items-center justify-between sticky top-0 z-20 shadow-sm transition-colors duration-300">
+                    <button onclick="goBack()" class="back-btn tap-effect p-2 bg-white/30 backdrop-blur-md rounded-full text-white flex items-center justify-center w-10 h-10 shadow-sm">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <h2 id="cat-title" class="font-title text-2xl font-bold text-white text-center flex-1 pr-10">Título</h2>
+                </div>
+
+                <!-- Botón Imprimir -->
+                <div class="px-5 mt-6 flex justify-end">
+                    <button id="print-btn" onclick="window.print()" class="tap-effect flex items-center space-x-2 text-sm font-semibold text-gray-500 bg-white px-4 py-2 rounded-full shadow-sm border border-gray-100">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        <span>Imprimir guía</span>
+                    </button>
+                </div>
+
+                <!-- Lista de Cuentos -->
+                <div id="stories-container" class="p-5 flex flex-col space-y-4">
+                    <!-- Los cuentos se inyectan por JS -->
+                </div>
             </div>
         </div>
-    </header>
 
-    <main class="flex-1 w-full max-w-3xl mx-auto px-4 sm:px-6 py-8 pb-24" id="content-container">
-        <!-- El contenido se inyectará aquí vía JS -->
+        <!-- TAB 2: CÓMO USAR -->
+        <div id="tab-howto" class="tab-content h-full w-full overflow-y-auto no-scrollbar pb-24 px-5 pt-6">
+            <h2 class="font-title text-2xl font-bold text-ps-orange mb-1 text-center">Cómo usar esta guía</h2>
+            <p class="font-body text-gray-600 mb-5 text-sm text-center">Tres pasos simples para conectar con tu hijo tras cada cuento.</p>
+
+            <div class="space-y-3">
+                <!-- Step 1 -->
+                <div class="bg-white rounded-2xl p-4 shadow-premium flex items-start space-x-3 border border-orange-50">
+                    <div class="bg-orange-100 text-ps-orange font-title font-bold text-lg w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5">1</div>
+                    <div>
+                        <h3 class="font-title font-bold text-[1.1rem] text-gray-800 leading-tight mb-1">Escuchen juntos</h3>
+                        <p class="font-body text-gray-600 text-[0.85rem] leading-snug">Disfruten el cuento en la app principal. Deja que tu hijo absorba la historia sin interrupciones.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="bg-white rounded-2xl p-4 shadow-premium flex items-start space-x-3 border border-orange-50">
+                    <div class="bg-orange-100 text-ps-orange font-title font-bold text-lg w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5">2</div>
+                    <div>
+                        <h3 class="font-title font-bold text-[1.1rem] text-gray-800 leading-tight mb-1">Abran la conversación</h3>
+                        <p class="font-body text-gray-600 text-[0.85rem] leading-snug">Usa las <span class="font-bold">3 preguntas</span> para charlar. No busques respuestas "correctas", el objetivo es que exprese lo que piensa.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white rounded-2xl p-4 shadow-premium flex items-start space-x-3 border border-orange-50">
+                    <div class="bg-orange-100 text-ps-orange font-title font-bold text-lg w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5">3</div>
+                    <div>
+                        <h3 class="font-title font-bold text-[1.1rem] text-gray-800 leading-tight mb-1">Llévenlo a la práctica</h3>
+                        <p class="font-body text-gray-600 text-[0.85rem] leading-snug">Lee el <span class="font-bold">Consejo</span> y hagan la <span class="font-bold">Actividad</span> para que el valor del cuento se vuelva un hábito real.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5 text-center">
+                <svg class="w-10 h-10 mx-auto text-ps-orange/30" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <p class="font-title font-medium text-gray-400 text-xs mt-1">Creando momentos mágicos</p>
+            </div>
+        </div>
+
     </main>
 
+    <nav class="fixed bottom-0 w-full bg-white/90 backdrop-blur-lg border-t border-gray-100 shadow-[0_-10px_20px_rgba(0,0,0,0.03)] z-50 safe-pb">
+        <div class="flex justify-around items-center h-16 px-6">
+            <button onclick="switchTab('cuentos')" id="nav-btn-cuentos" class="nav-btn flex flex-col items-center justify-center w-full h-full text-ps-orange tap-effect transition-colors">
+                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+                <span class="text-[10px] font-bold tracking-wide uppercase">Cuentos</span>
+            </button>
+            <button onclick="switchTab('howto')" id="nav-btn-howto" class="nav-btn flex flex-col items-center justify-center w-full h-full text-gray-400 tap-effect transition-colors">
+                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-[10px] font-bold tracking-wide uppercase">Cómo usar</span>
+            </button>
+        </div>
+    </nav>
+
     <script>
-        // Datos completos proporcionados en el prompt
-        const appData = [
+        // DATOS DE LA APLICACIÓN (Cuentos y Categorías)
+        const contentData = [
             {
-                id: 'pantalla',
+                id: 'pantallas',
                 title: 'Tiempo de Pantalla',
-                colorRef: 'screen', // Referencia a la paleta en tailwind.config
-                icon: 'ph-monitor-play',
+                count: '4 cuentos',
+                bgClass: 'bg-cat-screen',
+                textClass: 'text-cat-screen-dark',
+                headerClass: 'bg-cat-screen-dark',
+                icon: `<svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`,
                 stories: [
                     {
-                        title: 'El Reloj del Capitán Tiempo',
-                        value: 'Manejo del tiempo',
+                        title: "El Reloj del Capitán Tiempo",
+                        value: "Manejo del tiempo",
                         questions: [
-                            '¿Qué pasó cuando el Capitán Tiempo le mostró a Leo que las pantallas tienen un inicio y un fin?',
-                            '¿Qué aventuras te gustaría vivir tú cuando se apague la pantalla?',
-                            '¿Cómo te sientes cuando sabes cuánto tiempo vas a jugar antes de empezar?'
+                            "¿Qué pasó cuando el Capitán Tiempo le mostró a Leo que las pantallas tienen un inicio y un fin?",
+                            "¿Qué aventuras te gustaría vivir tú cuando se apague la pantalla?",
+                            "¿Cómo te sientes cuando sabes cuánto tiempo vas a jugar antes de empezar?"
                         ],
-                        tip: 'Antes de dar la pantalla, acuerden juntos cuánto tiempo va a durar usando un reloj o temporizador visible, así el niño ve el tiempo pasar en vez de que se lo quiten de sorpresa.',
-                        activity: 'Sean ustedes el "Capitán Tiempo": pongan una alarma divertida (como un sonido de barco) que avise 5 minutos antes de que termine el tiempo de pantalla.'
+                        tip: "Antes de dar la pantalla, acuerden juntos cuánto tiempo va a durar usando un reloj o temporizador visible, así el niño ve el tiempo pasar en vez de que se lo quiten de sorpresa.",
+                        activity: "Sean ustedes el \"Capitán Tiempo\": pongan una alarma divertida (como un sonido de barco) que avise 5 minutos antes de que termine el tiempo de pantalla."
                     },
                     {
-                        title: 'La Tableta de la Sabiduría',
-                        value: 'Curiosidad y uso productivo',
+                        title: "La Tableta de la Sabiduría",
+                        value: "Curiosidad y uso productivo de la tecnología",
                         questions: [
-                            '¿Qué hizo Sofía como detective para resolver el misterio de la oruga?',
-                            '¿Qué misterio te gustaría investigar tú con ayuda de una tableta o un libro?',
-                            '¿Qué diferencia hay entre usar la tableta para jugar y usarla para aprender algo nuevo?'
+                            "¿Qué hizo Sofía como detective para resolver el misterio de la oruga?",
+                            "¿Qué misterio te gustaría investigar tú con ayuda de una tableta o un libro?",
+                            "¿Qué diferencia hay entre usar la tableta para jugar y usarla para aprender algo nuevo?"
                         ],
-                        tip: 'Guarda una o dos apps o videos educativos como "favoritos" y ofrécelos como primera opción antes que el entretenimiento pasivo, para que la tecnología se asocie también con descubrir cosas.',
-                        activity: 'Elijan juntos un "misterio de la semana" (como de qué está hecha una nube) e investíguenlo juntos usando la tableta como herramienta, no como distracción.'
+                        tip: "Guarda una o dos apps o videos educativos como \"favoritos\" y ofrécelos como primera opción antes que el entretenimiento pasivo, para que la tecnología se asocie también con descubrir cosas.",
+                        activity: "Elijan juntos un \"misterio de la semana\" (como de qué está hecha una nube) e investíguenlo juntos usando la tableta como herramienta, no como distracción."
                     },
                     {
-                        title: 'El Adiós sin Lágrimas',
-                        value: 'Manejo de la frustración',
+                        title: "El Adiós sin Lágrimas",
+                        value: "Manejo de la frustración y las despedidas",
                         questions: [
-                            '¿Cómo logró Mateo convertir el "adiós" al celular en un juego?',
-                            '¿Qué juego podrías inventar tú para despedirte de la pantalla sin enojarte?',
-                            '¿Qué te ayuda a sentirte mejor cuando algo divertido se tiene que terminar?'
+                            "¿Cómo logró Mateo convertir el \"adiós\" al celular en un juego?",
+                            "¿Qué juego podrías inventar tú para despedirte de la pantalla sin enojarte?",
+                            "¿Qué te ayuda a sentirte mejor cuando algo divertido se tiene que terminar?"
                         ],
-                        tip: 'Convierte el momento de "apagar la pantalla" en un ritual breve y positivo (una frase, un gesto, una canción de 10 segundos) en vez de una orden repentina — reduce mucho las rabietas.',
-                        activity: 'Inventen juntos su propio "ritual de despedida" de la pantalla esta semana y practíquenlo cada vez que se apague.'
+                        tip: "Convierte el momento de \"apagar la pantalla\" en un ritual breve y positivo (una frase, un gesto, una canción de 10 segundos) en vez de una orden repentina — reduce mucho las rabietas.",
+                        activity: "Inventen juntos su propio \"ritual de despedida\" de la pantalla esta semana y practíquenlo cada vez que se apague."
                     },
                     {
-                        title: 'Los Ojos del Búho Curioso',
-                        value: 'Autocuidado y descanso',
+                        title: "Los Ojos del Búho Curioso",
+                        value: "Autocuidado y descanso",
                         questions: [
-                            '¿Por qué Ulises el buhito necesitaba descansar sus ojos?',
-                            '¿Cómo sabes tú cuándo tus ojos o tu cuerpo están cansados?',
-                            '¿Qué te gusta hacer para descansar cuando has estado mucho tiempo mirando algo?'
+                            "¿Por qué Ulises el buhito necesitaba descansar sus ojos?",
+                            "¿Cómo sabes tú cuándo tus ojos o tu cuerpo están cansados?",
+                            "¿Qué te gusta hacer para descansar cuando has estado mucho tiempo mirando algo?"
                         ],
-                        tip: 'Enséñale la regla sencilla de "mirar lejos cada rato": cada cierto tiempo de pantalla, miren juntos algo lejano por unos segundos, como hacía Ulises.',
-                        activity: 'Practiquen esta semana una "pausa de búho": cada 20-30 minutos de pantalla, hagan una pausa de 1 minuto mirando por la ventana.'
+                        tip: "Enséñale la regla sencilla de \"mirar lejos cada rato\": cada cierto tiempo de pantalla, miren juntos algo lejano por unos segundos, como hacía Ulises.",
+                        activity: "Practiquen esta semana una \"pausa de búho\": cada 20-30 minutos de pantalla, hagan una pausa de 1 minuto mirando por la ventana."
                     }
                 ]
             },
             {
                 id: 'aprender',
                 title: 'Aprender y Descubrir',
-                colorRef: 'learn',
-                icon: 'ph-lightbulb',
+                count: '4 cuentos',
+                bgClass: 'bg-cat-learn',
+                textClass: 'text-cat-learn-dark',
+                headerClass: 'bg-cat-learn-dark',
+                icon: `<svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>`,
                 stories: [
                     {
-                        title: 'El Safari de las Vocales',
-                        value: 'Curiosidad por aprender',
+                        title: "El Safari de las Vocales",
+                        value: "Curiosidad por aprender",
                         questions: [
-                            '¿Qué tesoros buscaban Lupe y Coco en su safari?',
-                            '¿Qué letra o palabra te gustaría "cazar" tú en un safari de aprendizaje?',
-                            '¿Dónde has visto vocales escondidas hoy, como en tu casa o en la calle?'
+                            "¿Qué tesoros buscaban Lupe y Coco en su safari?",
+                            "¿Qué letra o palabra te gustaría \"cazar\" tú en un safari de aprendizaje?",
+                            "¿Dónde has visto vocales escondidas hoy, como en tu casa o en la calle?"
                         ],
-                        tip: 'Convierte el aprendizaje en un juego de búsqueda: "busca 3 cosas que empiecen con la letra A" mientras caminan o están en casa.',
-                        activity: 'Hagan esta semana su propio "safari de letras" en casa, buscando objetos que empiecen con cada vocal.'
+                        tip: "Convierte el aprendizaje en un juego de búsqueda: \"busca 3 cosas que empiecen con la letra A\" mientras caminan o están en casa.",
+                        activity: "Hagan esta semana su propio \"safari de letras\" en casa, buscando objetos que empiecen con cada vocal."
                     },
                     {
-                        title: 'La Tienda de los Números Saltarines',
-                        value: 'Perseverancia al aprender',
+                        title: "La Tienda de los Números Saltarines",
+                        value: "Perseverancia al aprender",
                         questions: [
-                            '¿Cómo ayudó Bruno a contar las frutas saltarinas en el mercado?',
-                            '¿Qué cosas te gustaría contar tú, como en la tienda de Don Zanahoria?',
-                            '¿Qué haces cuando te equivocas al contar o al aprender algo nuevo?'
+                            "¿Cómo ayudó Bruno a contar las frutas saltarinas en el mercado?",
+                            "¿Qué cosas te gustaría contar tú, como en la tienda de Don Zanahoria?",
+                            "¿Qué haces cuando te equivocas al contar o al aprender algo nuevo?"
                         ],
-                        tip: 'Aprovecha momentos cotidianos (poner la mesa, guardar juguetes) para contar en voz alta juntos, sin presión de "hacerlo bien", solo practicando con calma.',
-                        activity: 'Jueguen esta semana a la "tienda": armen una tiendita en casa con juguetes o frutas de mentira y cuenten juntos los "productos".'
+                        tip: "Aprovecha momentos cotidianos (poner la mesa, guardar juguetes) para contar en voz alta juntos, sin presión de \"hacerlo bien\", solo practicando con calma.",
+                        activity: "Jueguen esta semana a la \"tienda\": armen una tiendita en casa con juguetes o frutas de mentira y cuenten juntos los \"productos\"."
                     },
                     {
-                        title: 'El Pequeño Científico de las Preguntas',
-                        value: 'Curiosidad sin miedo',
+                        title: "El Pequeño Científico de las Preguntas",
+                        value: "Curiosidad sin miedo a preguntar",
                         questions: [
-                            '¿Qué descubrió Dani sobre hacer preguntas como los científicos?',
-                            '¿Cuál es la pregunta "por qué" que más te gustaría hacerme a mí?',
-                            '¿Cómo te sientes cuando alguien responde tus preguntas con paciencia?'
+                            "¿Qué descubrió Dani sobre hacer preguntas como los científicos?",
+                            "¿Cuál es la pregunta \"por qué\" que más te gustaría hacerme a mí?",
+                            "¿Cómo te sientes cuando alguien responde tus preguntas con paciencia?"
                         ],
-                        tip: 'Cuando tu hijo pregunte algo que no sabes responder, celebra la pregunta en vez de esquivarla: "¡qué buena pregunta! busquemos la respuesta juntos".',
-                        activity: 'Esta semana, tengan un "frasco de preguntas": cada vez que surja una pregunta curiosa, anótenla y busquen la respuesta juntos un rato después.'
+                        tip: "Cuando tu hijo pregunte algo que no sabes responder, celebra la pregunta en vez de esquivarla: \"¡qué buena pregunta! busquemos la respuesta juntos\".",
+                        activity: "Esta semana, tengan un \"frasco de preguntas\": cada vez que surja una pregunta curiosa, anótenla y busquen la respuesta juntos un rato después."
                     },
                     {
-                        title: 'Formas en el Espacio',
-                        value: 'Observación y creatividad',
+                        title: "Formas en el Espacio",
+                        value: "Observación y creatividad",
                         questions: [
-                            '¿Qué formas encontraron Luna y Bip para armar su cohete?',
-                            '¿Qué formas puedes encontrar tú a tu alrededor ahora mismo?',
-                            '¿Qué construirías tú si tuvieras un cohete de formas mágicas?'
+                            "¿Qué formas encontraron Luna y Bip para armar su cohete?",
+                            "¿Qué formas puedes encontrar tú a tu alrededor ahora mismo?",
+                            "¿Qué construirías tú si tuvieras un cohete de formas mágicas?"
                         ],
-                        tip: 'Al pasear o estar en casa, señala formas geométricas en objetos cotidianos (una ventana es un rectángulo, un plato es un círculo) para entrenar su observación de forma natural.',
-                        activity: 'Construyan juntos algo (una nave, una casa, un animal) usando solo objetos con formas geométricas que tengan en casa.'
+                        tip: "Al pasear o estar en casa, señala formas geométricas en objetos cotidianos (una ventana es un rectángulo, un plato es un círculo) para entrenar su observación de forma natural.",
+                        activity: "Construyan juntos algo (una nave, una casa, un animal) usando solo objetos con formas geométricas que tengan en casa."
                     }
                 ]
             },
             {
                 id: 'rutinas',
                 title: 'Rutinas y Autonomía',
-                colorRef: 'routine',
-                icon: 'ph-sun-horizon',
+                count: '4 cuentos',
+                bgClass: 'bg-cat-routine',
+                textClass: 'text-cat-routine-dark',
+                headerClass: 'bg-cat-routine-dark',
+                icon: `<svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
                 stories: [
                     {
-                        title: 'La Misión del Baño Divertido',
-                        value: 'Autonomía en el cuidado',
+                        title: "La Misión del Baño Divertido",
+                        value: "Autonomía en el cuidado personal",
                         questions: [
-                            '¿Cómo se convirtió Mía en la Capitana Burbuja para vencer a los bichitos traviesos?',
-                            '¿Qué superhéroe o superheroína te gustaría ser tú a la hora del baño?',
-                            '¿Qué parte de bañarte te gusta hacer tú solito/a?'
+                            "¿Cómo se convirtió Mía en la Capitana Burbuja para vencer a los bichitos traviesos?",
+                            "¿Qué superhéroe o superheroína te gustaría ser tú a la hora del baño?",
+                            "¿Qué parte de bañarte te gusta hacer tú solito/a?"
                         ],
-                        tip: 'Dale a tu hijo pequeñas "misiones" durante el baño (enjabonar sus manos, enjuagarse solo) en vez de hacerlo todo por él — refuerza autonomía sin quitarle la diversión.',
-                        activity: 'Esta semana, elijan juntos un "nombre de superhéroe del baño" y una misión especial que pueda cumplir solo cada noche.'
+                        tip: "Dale a tu hijo pequeñas \"misiones\" durante el baño (enjabonar sus manos, enjuagarse solo) en vez de hacerlo todo por él — refuerza autonomía sin quitarle la diversión.",
+                        activity: "Esta semana, elijan juntos un \"nombre de superhéroe del baño\" y una misión especial que pueda cumplir solo cada noche."
                     },
                     {
-                        title: 'El Ejército del Orden',
-                        value: 'Responsabilidad y orden',
+                        title: "El Ejército del Orden",
+                        value: "Responsabilidad y orden",
                         questions: [
-                            '¿Cómo descubrió Simón que ordenar juguetes puede ser un juego?',
-                            '¿Qué juego inventarías tú para ordenar tu cuarto?',
-                            '¿Cómo te sientes cuando tu espacio está ordenado?'
+                            "¿Cómo descubrió Simón que ordenar juguetes puede ser un juego?",
+                            "¿Qué juego inventarías tú para ordenar tu cuarto?",
+                            "¿Cómo te sientes cuando tu espacio está ordenado?"
                         ],
-                        tip: 'Convierte ordenar en un reto con tiempo ("¿puedes guardar todo antes de que termine esta canción?") en vez de una orden seria — mantiene la diversión sin perder el hábito.',
-                        activity: 'Elijan juntos una canción "de ordenar" que pondrán cada noche esta semana como señal de que es hora de guardar los juguetes.'
+                        tip: "Convierte ordenar en un reto con tiempo (\"¿puedes guardar todo antes de que termine esta canción?\") en vez de una orden seria — mantiene la diversión sin perder el hábito.",
+                        activity: "Elijan juntos una canción \"de ordenar\" que pondrán cada noche esta semana como señal de que es hora de guardar los juguetes."
                     },
                     {
-                        title: 'El Viaje al Mundo de los Sueños',
-                        value: 'Rutina de sueño',
+                        title: "El Viaje al Mundo de los Sueños",
+                        value: "Rutina de sueño",
                         questions: [
-                            '¿Cómo era el Tren de los Sueños que Nina tomaba cada noche?',
-                            '¿Qué te gustaría soñar tú esta noche si tomaras ese tren?',
-                            '¿Qué te ayuda a sentirte tranquilo/a antes de dormir?'
+                            "¿Cómo era el Tren de los Sueños que Nina tomaba cada noche?",
+                            "¿Qué te gustaría soñar tú esta noche si tomaras ese tren?",
+                            "¿Qué te ayuda a sentirte tranquilo/a antes de dormir?"
                         ],
-                        tip: 'Crea una pequeña rutina fija antes de dormir (bañarse, cuento, luz baja) que se repita cada noche en el mismo orden — la previsibilidad ayuda mucho a que los niños se relajen.',
-                        activity: 'Esta semana, elijan juntos los "3 pasos del tren de los sueños" que van a seguir cada noche antes de dormir.'
+                        tip: "Crea una pequeña rutina fija antes de dormir (bañarse, cuento, luz baja) que se repita cada noche en el mismo orden — la previsibilidad ayuda mucho a que los niños se relajen.",
+                        activity: "Esta semana, elijan juntos los \"3 pasos del tren de los sueños\" que van a seguir cada noche antes de dormir."
                     },
                     {
-                        title: 'El Desayuno de los Campeones',
-                        value: 'Hábitos y autonomía',
+                        title: "El Desayuno de los Campeones",
+                        value: "Hábitos saludables y autonomía",
                         questions: [
-                            '¿Qué pasó cuando el desayuno de Teo cobró vida?',
-                            '¿Qué desayuno te da a ti energía de campeón?',
-                            '¿Qué parte del desayuno te gustaría preparar tú solo/a?'
+                            "¿Qué pasó cuando el desayuno de Teo cobró vida?",
+                            "¿Qué desayuno te da a ti energía de campeón?",
+                            "¿Qué parte del desayuno te gustaría preparar tú solo/a?"
                         ],
-                        tip: 'Invita a tu hijo a participar en preparar (aunque sea una parte simple) su desayuno — sentirse "capaz" de contribuir aumenta su disposición a comer bien.',
-                        activity: 'Elijan juntos un "desayuno de campeón" para preparar juntos un día esta semana, dejando que tu hijo elija o prepare algo por sí mismo.'
+                        tip: "Invita a tu hijo a participar en preparar (aunque sea una parte simple) su desayuno — sentirse \"capaz\" de contribuir aumenta su disposición a comer bien.",
+                        activity: "Elijan juntos un \"desayuno de campeón\" para preparar juntos un día esta semana, dejando que tu hijo elija o prepare algo por sí mismo."
                     }
                 ]
             },
             {
                 id: 'emociones',
                 title: 'Emociones y Escuela',
-                colorRef: 'emotion',
-                icon: 'ph-heart',
+                count: '4 cuentos',
+                bgClass: 'bg-cat-emotion',
+                textClass: 'text-cat-emotion-dark',
+                headerClass: 'bg-cat-emotion-dark',
+                icon: `<svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>`,
                 stories: [
                     {
-                        title: 'El Semáforo de las Emociones',
-                        value: 'Reconocer emociones',
+                        title: "El Semáforo de las Emociones",
+                        value: "Reconocer y nombrar emociones",
                         questions: [
-                            '¿Qué colores usaba Julia para entender sus emociones con Don Semáforo?',
-                            '¿De qué color dirías que está tu semáforo ahora mismo (rojo, amarillo o verde)?',
-                            '¿Qué te ayuda a pasar del rojo al verde cuando estás molesto/a?'
+                            "¿Qué colores usaba Julia para entender sus emociones con Don Semáforo?",
+                            "¿De qué color dirías que está tu semáforo ahora mismo (rojo, amarillo o verde)?",
+                            "¿Qué te ayuda a pasar del rojo al verde cuando estás molesto/a?"
                         ],
-                        tip: 'Cuando tu hijo esté alterado, en vez de pedirle que "se calme", pregúntale de qué color está su semáforo — le da un lenguaje simple para expresar lo que siente sin necesitar más palabras.',
-                        activity: 'Hagan juntos un semáforo de cartulina esta semana y úsenlo en casa cuando alguien necesite decir cómo se siente.'
+                        tip: "Cuando tu hijo esté alterado, en vez de pedirle que \"se calme\", pregúntale de qué color está su semáforo — le da un lenguaje simple para expresar lo que siente sin necesitar más palabras.",
+                        activity: "Hagan juntos un semáforo de cartulina esta semana y úsenlo en casa cuando alguien necesite decir cómo se siente."
                     },
                     {
-                        title: 'Un Día en la Escuela de Magia',
-                        value: 'Valentía ante el cambio',
+                        title: "Un Día en la Escuela de Magia",
+                        value: "Valentía ante el cambio",
                         questions: [
-                            '¿Qué magia descubrió Martín en su primer día de escuela?',
-                            '¿Qué fue lo que más te dio nervios a ti en tu primer día de algo nuevo?',
-                            '¿Qué te ayudaría a sentirte más valiente en una situación nueva?'
+                            "¿Qué magia descubrió Martín en su primer día de escuela?",
+                            "¿Qué fue lo que más te dio nervios a ti en tu primer día de algo nuevo?",
+                            "¿Qué te ayudaría a sentirte más valiente en una situación nueva?"
                         ],
-                        tip: 'Antes de una situación nueva (primer día de clases, una fiesta, un lugar desconocido), habla con tu hijo sobre qué esperar — reduce la ansiedad al quitarle lo "desconocido" a la experiencia.',
-                        activity: 'Esta semana, hablen de algo nuevo que se acerque (una actividad, un lugar) y hagan juntos una lista de las cosas buenas que podrían pasar.'
+                        tip: "Antes de una situación nueva (primer día de clases, una fiesta, un lugar desconocido), habla con tu hijo sobre qué esperar — reduce la ansiedad al quitarle lo \"desconocido\" a la experiencia.",
+                        activity: "Esta semana, hablen de algo nuevo que se acerque (una actividad, un lugar) y hagan juntos una lista de las cosas buenas que podrían pasar."
                     },
                     {
-                        title: 'El Abrazo de la Calma',
-                        value: 'Autorregulación',
+                        title: "El Abrazo de la Calma",
+                        value: "Autorregulación emocional",
                         questions: [
-                            '¿Cómo hacía Koko el koalita para calmar su volcán de enojo?',
-                            '¿Qué haces tú para calmarte cuando sientes que vas a "explotar"?',
-                            '¿Quién te da los mejores abrazos de calma?'
+                            "¿Cómo hacía Koko el koalita para calmar su volcán de enojo?",
+                            "¿Qué haces tú para calmarte cuando sientes que vas a \"explotar\"?",
+                            "¿Quién te da los mejores abrazos de calma?"
                         ],
-                        tip: 'Enséñale a tu hijo una técnica de respiración simple (como "soplar velitas" igual que Koko) que pueda usar como su propia herramienta cuando se sienta abrumado.',
-                        activity: 'Practiquen juntos varias veces esta semana la respiración de "soplar velitas" en momentos tranquilos, para que ya la conozca cuando la necesite en un momento de enojo.'
+                        tip: "Enséñale a tu hijo una técnica de respiración simple (como \"soplar velitas\" igual que Koko) que pueda usar como su propia herramienta cuando se sienta abrumado.",
+                        activity: "Practiquen juntos varias veces esta semana la respiración de \"soplar velitas\" en momentos tranquilos, para que ya la conozca cuando la necesite en un momento de enojo."
                     },
                     {
-                        title: 'El Gran Libro de los Lo Siento',
-                        value: 'Empatía y disculpa',
+                        title: "El Gran Libro de los Lo Siento",
+                        value: "Empatía y disculpa sincera",
                         questions: [
-                            '¿Cuáles eran los tres pasos mágicos que aprendió Pipa la zorrita para pedir perdón?',
-                            '¿Alguna vez tuviste que pedir perdón a alguien? ¿Cómo te sentiste después?',
-                            '¿Cómo te sientes cuando alguien te pide perdón de verdad?'
+                            "¿Cuáles eran los tres pasos mágicos que aprendió Pipa la zorrita para pedir perdón?",
+                            "¿Alguna vez tuviste que pedir perdón a alguien? ¿Cómo te sentiste después?",
+                            "¿Cómo te sientes cuando alguien te pide perdón de verdad?"
                         ],
-                        tip: 'Enseña a tu hijo que una disculpa completa tiene tres partes: reconocer lo que pasó, decir cómo se siente el otro, y decir qué hará diferente — no solo decir "perdón" rápido y seguir jugando.',
-                        activity: 'La próxima vez que surja un conflicto esta semana, practiquen juntos los "tres pasos mágicos" de Pipa para pedir perdón de verdad.'
+                        tip: "Enseña a tu hijo que una disculpa completa tiene tres partes: reconocer lo que pasó, decir cómo se siente el otro, y decir qué hará diferente — no solo decir \"perdón\" rápido y seguir jugando.",
+                        activity: "La próxima vez que surja un conflicto esta semana, practiquen juntos los \"tres pasos mágicos\" de Pipa para pedir perdón de verdad."
                     }
                 ]
             },
             {
                 id: 'modales',
                 title: 'Modales y Valores',
-                colorRef: 'values',
-                icon: 'ph-star',
+                count: '4 cuentos',
+                bgClass: 'bg-cat-values',
+                textClass: 'text-cat-values-dark',
+                headerClass: 'bg-cat-values-dark',
+                icon: `<svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>`,
                 stories: [
                     {
-                        title: 'Las Llaves de Oro',
-                        value: 'Modales básicos',
+                        title: "Las Llaves de Oro",
+                        value: "Modales básicos",
                         questions: [
-                            '¿Qué puertas mágicas pudo abrir Valentina usando "por favor", "gracias" y "perdón"?',
-                            '¿Qué palabra mágica usas tú más seguido?',
-                            '¿Cómo cambia la cara de alguien cuando le dices "gracias"?'
+                            "¿Qué puertas mágicas pudo abrir Valentina usando \"por favor\", \"gracias\" y \"perdón\"?",
+                            "¿Qué palabra mágica usas tú más seguido?",
+                            "¿Cómo cambia la cara de alguien cuando le dices \"gracias\"?"
                         ],
-                        tip: 'Modela tú mismo estas palabras en el día a día con tu hijo (dile "gracias" y "por favor" a él también) — los niños imitan más lo que ven que lo que se les dice.',
-                        activity: 'Esta semana, hagan un "conteo de llaves de oro": cada vez que alguien en casa use por favor, gracias o perdón, agreguen una llave de papel a un frasco.'
+                        tip: "Modela tú mismo estas palabras en el día a día con tu hijo (dile \"gracias\" y \"por favor\" a él también) — los niños imitan más lo que ven que lo que se les dice.",
+                        activity: "Esta semana, hagan un \"conteo de llaves de oro\": cada vez que alguien en casa use por favor, gracias o perdón, agreguen una llave de papel a un frasco."
                     },
                     {
-                        title: 'El Dragón que Aprendió a Esperar',
-                        value: 'Paciencia',
+                        title: "El Dragón que Aprendió a Esperar",
+                        value: "Paciencia",
                         questions: [
-                            '¿Cuál era el truco secreto que descubrió Chispa el dragoncito para esperar su turno?',
-                            '¿Qué es lo más difícil de esperar para ti?',
-                            '¿Qué puedes hacer mientras esperas para que se sienta menos largo?'
+                            "¿Cuál era el truco secreto que descubrió Chispa el dragoncito para esperar su turno?",
+                            "¿Qué es lo más difícil de esperar para ti?",
+                            "¿Qué puedes hacer mientras esperas para que se sienta menos largo?"
                         ],
-                        tip: 'Dale a tu hijo una "tarea de espera" concreta (contar hasta 10, buscar 3 cosas de color azul) en momentos donde tenga que esperar — convierte la espera en algo activo en vez de solo frustrante.',
-                        activity: 'La próxima vez que tengan que esperar juntos (una fila, el semáforo), practiquen el "truco secreto" de Chispa que hayan inventado juntos.'
+                        tip: "Dale a tu hijo una \"tarea de espera\" concreta (contar hasta 10, buscar 3 cosas de color azul) en momentos donde tenga que esperar — convierte la espera en algo activo en vez de solo frustrante.",
+                        activity: "La próxima vez que tengan que esperar juntos (una fila, el semáforo), practiquen el \"truco secreto\" de Chispa que hayan inventado juntos."
                     },
                     {
-                        title: 'El Equipo de los Juguetes Amigos',
-                        value: 'Compartir y generosidad',
+                        title: "El Equipo de los Juguetes Amigos",
+                        value: "Compartir y generosidad",
                         questions: [
-                            '¿Qué descubrieron Emma y Nico sobre compartir sus juguetes?',
-                            '¿Cuál es tu juguete favorito para compartir con alguien?',
-                            '¿Cómo te sientes cuando alguien comparte algo contigo?'
+                            "¿Qué descubrieron Emma y Nico sobre compartir sus juguetes?",
+                            "¿Cuál es tu juguete favorito para compartir con alguien?",
+                            "¿Cómo te sientes cuando alguien comparte algo contigo?"
                         ],
-                        tip: 'En vez de forzar a compartir todo siempre, deja que tu hijo elija qué está dispuesto a compartir en cada momento — el compartir genuino se construye con práctica, no con obligación.',
-                        activity: 'Organicen esta semana un momento de juego con otro niño (hermano, primo, amigo) y antes de empezar, pregúntale a tu hijo qué juguetes le gustaría compartir.'
+                        tip: "En vez de forzar a compartir todo siempre, deja que tu hijo elija qué está dispuesto a compartir en cada momento — el compartir genuino se construye con práctica, no con obligación.",
+                        activity: "Organicen esta semana un momento de juego con otro niño (hermano, primo, amigo) y antes de empezar, pregúntale a tu hijo qué juguetes le gustaría compartir."
                     },
                     {
-                        title: 'El Eco de la Verdad',
-                        value: 'Honestidad',
+                        title: "El Eco de la Verdad",
+                        value: "Honestidad",
                         questions: [
-                            '¿Qué aprendió Tomás sobre cómo se siente el corazón cuando dice la verdad?',
-                            '¿Alguna vez te costó decir la verdad? ¿Qué pasó después?',
-                            '¿Cómo te sientes tú cuando alguien te dice la verdad, aunque sea difícil de escuchar?'
+                            "¿Qué aprendió Tomás sobre cómo se siente el corazón cuando dice la verdad?",
+                            "¿Alguna vez te costó decir la verdad? ¿Qué pasó después?",
+                            "¿Cómo te sientes tú cuando alguien te dice la verdad, aunque sea difícil de escuchar?"
                         ],
-                        tip: 'Cuando tu hijo diga la verdad sobre algo difícil (aunque haya hecho algo mal), reconoce primero su honestidad antes de hablar de la consecuencia — así asocia decir la verdad con algo positivo, no con más problemas.',
-                        activity: 'Esta semana, cuéntale a tu hijo una vez en que decir la verdad fue difícil para ti, y qué aprendiste de esa experiencia.'
+                        tip: "Cuando tu hijo diga la verdad sobre algo difícil (aunque haya hecho algo mal), reconoce primero su honestidad antes de hablar de la consecuencia — así asocia decir la verdad con algo positivo, no con más problemas.",
+                        activity: "Esta semana, cuéntale a tu hijo una vez en que decir la verdad fue difícil para ti, y qué aprendiste de esa experiencia."
                     }
                 ]
             }
         ];
 
-        let currentFilter = 'todas';
-
-        function renderFilters() {
-            const container = document.getElementById('filters-container');
-            let html = `
-                <button onclick="setFilter('todas')" 
-                        class="filter-chip whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-200 border-2 ${currentFilter === 'todas' ? 'bg-brand text-white border-brand shadow-sm' : 'bg-white text-gray-500 border-gray-200 hover:border-brand/50'}">
-                    Todas
-                </button>
-            `;
-
-            appData.forEach(cat => {
-                // Clases dinámicas de Tailwind basadas en la categoría seleccionada
-                const isActive = currentFilter === cat.id;
-                const bgClass = isActive ? `bg-cat-${cat.colorRef}-bg` : 'bg-white';
-                const textClass = isActive ? `text-cat-${cat.colorRef}-text` : 'text-gray-500';
-                const borderClass = isActive ? `border-cat-${cat.colorRef}-border` : 'border-gray-200 hover:border-gray-300';
-                
-                html += `
-                    <button onclick="setFilter('${cat.id}')" 
-                            class="filter-chip whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-bold transition-all duration-200 border-2 ${bgClass} ${textClass} ${borderClass} ${isActive ? 'shadow-sm' : ''}">
-                        ${cat.title}
-                    </button>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        function renderContent() {
-            const container = document.getElementById('content-container');
-            let html = '';
-
-            const categoriesToShow = currentFilter === 'todas' 
-                ? appData 
-                : appData.filter(c => c.id === currentFilter);
-
-            categoriesToShow.forEach(cat => {
-                // Sección de categoría con su color de acento
-                html += `
-                    <section class="category-section mb-10 opacity-0 transition-opacity duration-500" style="animation: fadeIn 0.5s forwards;">
-                        <div class="category-header bg-cat-${cat.colorRef}-bg text-cat-${cat.colorRef}-text rounded-2xl p-5 mb-6 flex items-center gap-3 shadow-sm border border-cat-${cat.colorRef}-border/50">
-                            <i class="ph ${cat.icon} text-3xl"></i>
-                            <h2 class="font-display font-bold text-xl">${cat.title}</h2>
-                        </div>
-                        <div class="flex flex-col gap-4">
-                `;
-
-                cat.stories.forEach((story, index) => {
-                    // ID único para accesibilidad y toggle
-                    const cardId = `card-${cat.id}-${index}`;
-                    
-                    html += `
-                        <article class="card bg-white rounded-3xl shadow-soft border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-floating">
-                            
-                            <!-- Cabecera de la Tarjeta (Clickable) -->
-                            <button onclick="toggleCard('${cardId}')" class="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 focus:outline-none focus:bg-gray-50 transition-colors">
-                                <div class="flex-1 pr-4">
-                                    <h3 class="font-display font-bold text-lg text-gray-900 leading-tight mb-2">${story.title}</h3>
-                                    <span class="badge inline-block px-3 py-1 rounded-full text-xs font-bold tracking-wide bg-cat-${cat.colorRef}-bg text-cat-${cat.colorRef}-text border border-cat-${cat.colorRef}-border/50 uppercase">
-                                        ${story.value}
-                                    </span>
-                                </div>
-                                <div class="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center flex-shrink-0 card-icon-rotate text-gray-400">
-                                    <i class="ph ph-caret-down text-lg"></i>
-                                </div>
-                            </button>
-
-                            <!-- Contenido de la Tarjeta (Acordeón) -->
-                            <div id="${cardId}" class="accordion-content">
-                                <div class="accordion-content-inner px-5 sm:px-6 pb-6 pt-2">
-                                    
-                                    <!-- Preguntas -->
-                                    <div class="mb-6">
-                                        <div class="flex items-center gap-2 mb-3 text-cat-${cat.colorRef}-text">
-                                            <i class="ph-fill ph-chat-circle-text text-xl"></i>
-                                            <h4 class="font-display font-bold text-[1.1rem]">Para conversar:</h4>
-                                        </div>
-                                        <ul class="space-y-2.5">
-                                            ${story.questions.map(q => `
-                                                <li class="flex gap-3 text-gray-700">
-                                                    <span class="text-cat-${cat.colorRef}-text mt-1 opacity-70 flex-shrink-0"><i class="ph-fill ph-check-circle text-sm"></i></span>
-                                                    <span class="leading-relaxed">${q}</span>
-                                                </li>
-                                            `).join('')}
-                                        </ul>
-                                    </div>
-
-                                    <!-- Línea separadora sutil -->
-                                    <div class="h-px w-full bg-gray-100 mb-6"></div>
-
-                                    <!-- Consejo -->
-                                    <div class="mb-6 bg-amber-50/50 rounded-2xl p-4 sm:p-5 border border-amber-100/50">
-                                        <div class="flex items-center gap-2 mb-2 text-amber-600">
-                                            <i class="ph-fill ph-lightbulb text-xl"></i>
-                                            <h4 class="font-display font-bold text-[1.1rem]">Consejo para padres:</h4>
-                                        </div>
-                                        <p class="text-gray-700 leading-relaxed text-[0.95rem]">${story.tip}</p>
-                                    </div>
-
-                                    <!-- Actividad -->
-                                    <div class="bg-cat-${cat.colorRef}-bg/30 rounded-2xl p-4 sm:p-5 border border-cat-${cat.colorRef}-border/30">
-                                        <div class="flex items-center gap-2 mb-2 text-cat-${cat.colorRef}-text">
-                                            <i class="ph-fill ph-star text-xl"></i>
-                                            <h4 class="font-display font-bold text-[1.1rem]">Mini-actividad de la semana:</h4>
-                                        </div>
-                                        <p class="text-gray-700 leading-relaxed text-[0.95rem]">${story.activity}</p>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </article>
-                    `;
-                });
-
-                html += `
-                        </div>
-                    </section>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        function setFilter(filterId) {
-            currentFilter = filterId;
-            renderFilters();
-            renderContent();
-            // Scroll suave hacia arriba si el usuario estaba muy abajo
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function toggleCard(cardId) {
-            const card = document.getElementById(cardId).closest('.card');
-            
-            // Opcional: Cerrar las otras tarjetas al abrir una nueva (comentado para permitir múltiples abiertas)
-            // document.querySelectorAll('.card.expanded').forEach(c => {
-            //    if(c !== card) c.classList.remove('expanded');
-            // });
-
-            card.classList.toggle('expanded');
-        }
-
-        // Estilos para la animación de entrada
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
-            renderFilters();
-            renderContent();
+            renderCategories();
         });
 
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+
+            contentData.forEach((category) => {
+                const card = document.createElement('div');
+                // Se aplica el bgClass a la tarjeta completa, se reduce el padding y se ajustan las sombras
+                card.className = `tap-effect rounded-2xl p-3 shadow-sm border border-white/60 flex items-center cursor-pointer transition-all hover:shadow-md ${category.bgClass}`;
+                card.onclick = () => openCategory(category.id);
+
+                // El ícono ahora tiene fondo blanco para resaltar, y los textos son ligeramente más pequeños para ahorrar espacio vertical
+                card.innerHTML = `
+                    <div class="bg-white/90 ${category.textClass} w-12 h-12 rounded-xl flex items-center justify-center shrink-0 mr-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+                        ${category.icon.replace('w-10 h-10', 'w-7 h-7')}
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-title text-[1.05rem] font-bold text-gray-800 leading-tight">${category.title}</h3>
+                        <p class="font-body text-gray-600 text-[0.75rem] mt-0.5 flex items-center font-medium">
+                            <span class="w-1.5 h-1.5 rounded-full ${category.headerClass} mr-1.5 opacity-80"></span>
+                            ${category.count}
+                        </p>
+                    </div>
+                    <div class="${category.textClass} opacity-50">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderStories(category) {
+            const container = document.getElementById('stories-container');
+            container.innerHTML = '';
+            
+            // Íconos consistentes
+            const iconQ = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>`;
+            const iconTip = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>`;
+            const iconStar = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>`;
+
+            category.stories.forEach((story, index) => {
+                const card = document.createElement('div');
+                card.className = `print-break bg-white rounded-3xl shadow-premium border border-gray-50 overflow-hidden mb-4`;
+                
+                // Generar lista de preguntas
+                let questionsHtml = '';
+                story.questions.forEach((q, i) => {
+                    questionsHtml += `<li class="flex items-start"><span class="font-bold text-${category.textClass.split('-')[1]}-500 mr-2">${i+1}.</span> <span class="text-gray-700 leading-snug">${q}</span></li>`;
+                });
+
+                card.innerHTML = `
+                    <div class="story-card-header p-5 cursor-pointer tap-effect flex items-center justify-between" onclick="toggleAccordion(${index})">
+                        <div class="pr-4">
+                            <h4 class="font-title text-xl font-bold text-gray-800 leading-tight mb-2">${story.title}</h4>
+                            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${category.bgClass} ${category.textClass}">${story.value}</span>
+                        </div>
+                        <div class="accordion-icon text-gray-400 bg-gray-50 rounded-full p-2 shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                    
+                    <div id="acc-content-${index}" class="accordion-content bg-gray-50/50 px-5">
+                        <div class="pb-6 space-y-6 pt-2 border-t border-gray-100">
+                            
+                            <!-- Preguntas -->
+                            <div>
+                                <h5 class="flex items-center font-title font-bold text-[1.1rem] text-gray-800 mb-3">
+                                    <span class="p-1.5 rounded-lg ${category.bgClass} ${category.textClass} mr-2">${iconQ}</span>
+                                    Preguntas para conversar
+                                </h5>
+                                <ul class="font-body text-[0.95rem] space-y-3 pl-1">
+                                    ${questionsHtml}
+                                </ul>
+                            </div>
+
+                            <!-- Consejo -->
+                            <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                                <h5 class="flex items-center font-title font-bold text-[1.1rem] text-gray-800 mb-2">
+                                    <span class="text-amber-500 mr-2">${iconTip}</span>
+                                    Consejo para ti
+                                </h5>
+                                <p class="font-body text-[0.95rem] text-gray-600 leading-relaxed">${story.tip}</p>
+                            </div>
+
+                            <!-- Actividad -->
+                            <div class="${category.bgClass}/40 p-4 rounded-2xl border border-white">
+                                <h5 class="flex items-center font-title font-bold text-[1.1rem] text-gray-800 mb-2">
+                                    <span class="${category.textClass} mr-2">${iconStar}</span>
+                                    Actividad de la semana
+                                </h5>
+                                <p class="font-body text-[0.95rem] text-gray-700 leading-relaxed">${story.activity}</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        
+        // Cambiar entre Tabs principales (Cuentos / Cómo usar)
+        function switchTab(tabId) {
+            // Update buttons visually
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-ps-orange');
+                btn.classList.add('text-gray-400');
+            });
+            const activeBtn = document.getElementById(`nav-btn-${tabId}`);
+            activeBtn.classList.remove('text-gray-400');
+            activeBtn.classList.add('text-ps-orange');
+
+            // Switch content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+
+            // Si vamos a tab cuentos, asegurarnos de que la pantalla de inicio esté visible 
+            // a menos que ya estuviera dentro de una categoría. Para simplificar, siempre 
+            // mostramos la vista actual de ese tab, no la reseteamos.
+        }
+
+        // Navegar a Detalle de Categoría (Deslizamiento lateral)
+        function openCategory(categoryId) {
+            const category = contentData.find(c => c.id === categoryId);
+            if(!category) return;
+
+            // Actualizar Header
+            const header = document.getElementById('cat-header');
+            const title = document.getElementById('cat-title');
+            
+            // Limpiar clases de fondo anteriores
+            header.className = `py-3 px-4 flex items-center justify-between sticky top-0 z-20 shadow-sm transition-colors duration-300 ${category.headerClass}`;
+            title.innerText = category.title;
+
+            // Renderizar cuentos
+            renderStories(category);
+
+            // Animar pantallas
+            const screenHome = document.getElementById('screen-home');
+            const screenCategory = document.getElementById('screen-category');
+            
+            screenHome.classList.remove('screen-active');
+            screenHome.classList.add('screen-hidden-left');
+            
+            screenCategory.classList.remove('screen-hidden-right');
+            screenCategory.classList.add('screen-active');
+            
+            // Scroll to top of category screen
+            screenCategory.scrollTop = 0;
+        }
+
+        // Volver a Inicio (Deslizamiento lateral inverso)
+        function goBack() {
+            const screenHome = document.getElementById('screen-home');
+            const screenCategory = document.getElementById('screen-category');
+            
+            screenCategory.classList.remove('screen-active');
+            screenCategory.classList.add('screen-hidden-right');
+            
+            screenHome.classList.remove('screen-hidden-left');
+            screenHome.classList.add('screen-active');
+        }
+
+        // Funcionalidad de Acordeón para las tarjetas de cuentos
+        function toggleAccordion(index) {
+            const content = document.getElementById(`acc-content-${index}`);
+            const card = content.parentElement;
+            
+            const isExpanded = content.classList.contains('expanded');
+            
+            // Opcional: cerrar los demás (comentado para permitir múltiples abiertos, mejor UX para leer)
+            /* 
+            document.querySelectorAll('.accordion-content').forEach((el, i) => {
+                if(i !== index) {
+                    el.classList.remove('expanded');
+                    el.parentElement.classList.remove('expanded');
+                }
+            }); 
+            */
+
+            if (isExpanded) {
+                content.classList.remove('expanded');
+                card.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                card.classList.add('expanded');
+            }
+        }
     </script>
 </body>
 </html>
