@@ -152,7 +152,7 @@
             <div id="screen-home" class="screen-transition screen-active absolute inset-0 w-full h-full overflow-y-auto no-scrollbar pb-24">
                 
                 <!-- Encabezado Principal (En caja diferenciada) -->
-                <div class="mt-4 mx-4 mb-3 py-3 px-4 bg-gradient-to-br from-orange-100 to-orange-50 border border-orange-200/50 rounded-2xl shadow-sm text-center">
+                <div class="mt-12 mx-4 mb-3 py-3 px-4 bg-gradient-to-br from-orange-100 to-orange-50 border border-orange-200/50 rounded-2xl shadow-sm text-center">
                     <h1 class="font-title text-xl font-bold text-ps-orange tracking-wide leading-none">PEQUEÑOS SABIOS</h1>
                     <p class="font-body text-gray-600 font-medium mt-1 text-xs uppercase tracking-wider">Guía para padres</p>
                 </div>
@@ -170,7 +170,7 @@
             <div id="screen-category" class="screen-transition screen-hidden-right absolute inset-0 w-full h-full overflow-y-auto no-scrollbar pb-28 bg-ps-cream z-10">
                 
                 <!-- Encabezado de Categoría -->
-                <div id="cat-header" class="py-3 px-4 flex items-center justify-between sticky top-0 z-20 shadow-sm transition-colors duration-300">
+                <div id="cat-header" class="pt-12 pb-3 px-4 flex items-center justify-between sticky top-0 z-20 shadow-sm transition-colors duration-300">
                     <button onclick="goBack()" class="back-btn tap-effect p-2 bg-white/30 backdrop-blur-md rounded-full text-white flex items-center justify-center w-10 h-10 shadow-sm">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
                     </button>
@@ -193,7 +193,7 @@
         </div>
 
         <!-- TAB 2: CÓMO USAR -->
-        <div id="tab-howto" class="tab-content h-full w-full overflow-y-auto no-scrollbar pb-24 px-5 pt-6">
+        <div id="tab-howto" class="tab-content h-full w-full overflow-y-auto no-scrollbar pb-24 px-5 pt-12">
             <h2 class="font-title text-2xl font-bold text-ps-orange mb-1 text-center">Cómo usar esta guía</h2>
             <p class="font-body text-gray-600 mb-5 text-sm text-center">Tres pasos simples para conectar con tu hijo tras cada cuento.</p>
 
@@ -667,7 +667,7 @@
             const title = document.getElementById('cat-title');
             
             // Limpiar clases de fondo anteriores
-            header.className = `py-3 px-4 flex items-center justify-between sticky top-0 z-20 shadow-sm transition-colors duration-300 ${category.headerClass}`;
+            header.className = `pt-12 pb-3 px-4 flex items-center justify-between sticky top-0 z-20 shadow-sm transition-colors duration-300 ${category.headerClass}`;
             title.innerText = category.title;
 
             // Renderizar cuentos
